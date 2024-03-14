@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+
+  db_postgres:
+    image: postgres:16.2
+    #restart: always
+    # set shared memory limit
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: example
+    networks:
+      - database_net
+    volumes:
+      - ./init_postgres:/docker-entrypoint-initdb.d:ro
+
+  pgAdmin:
+    image: dpage/pgadmin4:8.4
+    networks:
+      - database_net
+    ports:
+      - 5050:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
+    volumes:
+      # init with default connexion
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json:ro
+
+networks:
+  database_net:
