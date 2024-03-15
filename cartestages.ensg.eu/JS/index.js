@@ -67,6 +67,9 @@ fetch(wfsUrl)
     
             // Création d'un marker au point en question, avec une couleur de marker dépendant de l'activité
             var marker = L.marker(latlng, {icon : redIcon});
+            
+            // Initialisation des popups
+            marker.bindPopup("<h3>" + feature.properties.title+"</h3><p>"+ feature.properties.organization_name+"<\p>")
         
             // Ajout du marker au cluster
             cluster.addLayer(marker)
@@ -77,3 +80,8 @@ fetch(wfsUrl)
     .catch(function(error) {
         console.error('Error fetching WFS data:', error);
 });
+
+
+// Ajout d'un event listener affichant les informations dans un popup
+cluster.addEventListener('click', e.propagatedFrom.openPopup());
+
