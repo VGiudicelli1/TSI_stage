@@ -45,7 +45,7 @@ CREATE TABLE public.internship
 	diapo_url character varying(1024) NOT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (id_student)
-        REFERENCES public.sutdent (id) MATCH SIMPLE
+        REFERENCES public.student (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE SET NULL
         NOT VALID,
