@@ -1,5 +1,9 @@
+-- use postgis to manipule geometries
 CREATE EXTENSION postgis;
 
+-- ------------------------------------------------------------------ --
+-- --  Tables and constraints                                      -- --
+-- ------------------------------------------------------------------ --
 CREATE TABLE public.student
 (
 	id serial NOT NULL,
@@ -29,7 +33,7 @@ ALTER TABLE IF EXISTS public.organization
 CREATE TABLE public.internship
 (
 	id serial NOT NULL,
-	id_student bigint NOT NULL,
+	id_student bigint,
 	id_organization bigint NOT NULL,
 	student_cycle character varying(64) NOT NULL,
 	title text NOT NULL,
@@ -39,13 +43,25 @@ CREATE TABLE public.internship
 	gratification boolean,
 	rapport_url character varying(1024) NOT NULL,
 	diapo_url character varying(1024) NOT NULL,
-	PRIMARY KEY (id_student)
+	PRIMARY KEY (id),
+	FOREIGN KEY (id_student)
+        REFERENCES public.sutdent (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE SET NULL
+        NOT VALID,
+    FOREIGN KEY (id_organization)
+        REFERENCES public.organization (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
 );
 
 ALTER TABLE IF EXISTS public.internship
 	OWNER to postgres;
 
-
+-- ------------------------------------------------------------------ --
+-- --  Views                                                       -- --
+-- ------------------------------------------------------------------ --
 CREATE VIEW public.view_internship AS
 	SELECT
 		i.id, i.title, i.begin, i.end, i.organization_contact, 
@@ -59,10 +75,11 @@ CREATE VIEW public.view_internship AS
 ALTER TABLE public.view_internship
     OWNER TO postgres;
 
+-- ------------------------------------------------------------------ --
+-- --  load data                                                   -- --
+-- ------------------------------------------------------------------ --
 
--- load data from csv : /docker-entrypoint-initdb.d/stages.csv
-
-CREATE TABLE internship_tmp (
+CREATE TEMP TABLE internship_tmp (
 	geometry TEXT,
 	id_eleve TEXT,
 	nom_eleve TEXT,
@@ -89,7 +106,8 @@ FROM '/docker-entrypoint-initdb.d/stages.csv'
 DELIMITER ','
 CSV HEADER;
 
-CREATE TABLE internship_tmp2 AS SELECT
+-- reformate and extract data
+CREATE TEMP TABLE internship_tmp2 AS SELECT
 	ST_GeomFromText(
 		'POINT (' || SPLIT_PART(geometry, ',', 2)  || ' ' || SPLIT_PART(geometry, ',', 1) || ')', 
 		4326
@@ -126,4 +144,5 @@ INSERT INTO internship (id_student, id_organization, student_cycle, title,
 	LEFT JOIN organization AS o ON o.name = entreprise_nom AND o.adress = adress
 ;
 
+-- remove temp tables
 DROP TABLE internship_tmp, internship_tmp2;
