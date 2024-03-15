@@ -82,6 +82,3 @@ fetch(wfsUrl)
 });
 
 
-// Ajout d'un event listener affichant les informations dans un popup
-cluster.addEventListener('click', e.propagatedFrom.openPopup());
-
