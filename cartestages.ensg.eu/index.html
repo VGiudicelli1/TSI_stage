@@ -15,6 +15,15 @@
     <link rel="stylesheet" href="./CSS/MarkerCluster.Default.css">
     <!-- Import de la feuille de style de la page -->
     <link rel="stylesheet" href="./CSS/index.css">
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet"></script>
+
+    <!-- Esri Leaflet Geocoder -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
+    />
+    <script src="https://unpkg.com/esri-leaflet-geocoder"></script>
 </head>
 <body>
     <!-- Carte -->
@@ -75,5 +84,5 @@
     <!-- Import du script pour les markers -->
     <script type="text/javascript" src="./JS/leaflet-color-markers.js"></script>
     <!-- Import de notre script -->
-    <script type="text/javascript" src= "./JS/index.js"></script>
+    <script type="module" src="./JS/index.js"></script>
 </body>

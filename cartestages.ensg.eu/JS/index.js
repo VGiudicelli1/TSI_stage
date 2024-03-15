@@ -1,3 +1,5 @@
+
+
 /* DEBUT CODE BURGER (bouton menu) */
 // Récupération des éléments pour le menu du bouton
 var sidenav = document.getElementById("mySidenav");
@@ -44,3 +46,48 @@ new L.control.zoom({position :'bottomright'}).addTo(map);
 var legend_act = L.control({position: 'bottomright'});
 var legend_vit = L.control({position: 'bottomright'});
 var legend_car = L.control({position: 'bottomright'});
+let markers = [goldIcon, redIcon, blueIcon, greenIcon, blackIcon]
+
+
+// fetch list des stages et géocodage des adresses
+async function getStages() {
+    const response = await fetch("http://localhost:3000/stages");
+    const stages = await response.json();
+    const locations = []
+    for (const stage of stages) {
+        locations.push(stage.entreprise_adresse + "," + stage.entreprise_ville+","+stage.entreprise_pays)
+    }
+
+    const geocodedLocations = await Promise.all(locations.map(async (location) => {
+        return new Promise((resolve, reject) => {
+            L.esri.Geocoding.geocode({apikey: 'esri leaflet token'}).text(location).run(function (err, results) {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                resolve(results.results[0].latlng);
+            });
+        });
+    }));
+    stages.map((stage, index)=>{
+        stage.location = geocodedLocations[index]
+    })
+    return stages
+}
+let stages = []
+getStages().then(data => (stages = data));
+console.log("liste des stages ", stages)
+stages.map((stage => {
+    let marker = new L.Marker([stage.location.lat, stage.location.lng]);
+    marker.addTo(map)
+}))
+
+getStages().then(data => {
+    stages = data;
+    console.log("liste des stages ", stages);
+    stages.map(stage => {
+        // Use the color markers here
+        let marker = new L.Marker([stage.location.lat, stage.location.lng], {icon: markers[Math.floor(Math.random()*5)]});
+        marker.addTo(map);
+    });
+});
