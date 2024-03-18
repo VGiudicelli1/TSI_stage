@@ -46,6 +46,8 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=SuperSecret		# LOGIN
     volumes:
       - ./pgadmin4/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - postgres
 
 networks:
   database_net:
