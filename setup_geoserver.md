@@ -21,3 +21,7 @@ Enfin on autorise tous les rôles en lecture de la couche:
 ```bash
 curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<rules><rule><@resource>stages.view_internship.r</@resource><text>*</text></rule></rules>" http://localhost:8080/geoserver/rest/security/acl/layers
 ```
+
+### Fichier initialisation
+
+Éxécuter le fichier [init.sh](./init.sh) permet d'éxécuter les 4 commandes, avec comme condition que le géoserver soit accessible à l'addresse http://localhost:8080/geoserver. 
