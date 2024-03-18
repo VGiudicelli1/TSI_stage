@@ -62,8 +62,14 @@ function requestPoints(url){
         return response.json();
     })
     .then(function(data) {
-        // Boucle sur la réponse
-        data.features.forEach(function(feature) {
+        //Cas où la réponse est vide 
+        if (data.totalFeatures==0){
+            alert("Aucun stage ne correspond à votre recherche");
+        }
+        //Cas où la réponse n'est pas vide
+        else{
+            // Boucle sur la réponse
+            data.features.forEach(function(feature) {
             // Extraction de la latitude et la longitude
             var latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
     
@@ -78,6 +84,7 @@ function requestPoints(url){
         })
         // Ajout du cluster sur la carte
         cluster.addTo(map);
+        }
     })
     .catch(function(error) {
         console.error('Error fetching WFS data:', error);
@@ -91,18 +98,29 @@ var start= document.getElementById("start");
 var end= document.getElementById("end");
 var loc_fr= document.getElementById("france");
 var loc_et= document.getElementById("etranger");
+var mot_cle= document.getElementById("mot_cle");
 
 var bouton = document.getElementById("applique_filtres");
 bouton.addEventListener('click', testFormulaire);
 
 
 function testFormulaire() {
-    console.log (start.value + " " + end.value + " " + loc_fr.checked)
+    console.log (start.value);
+    console.log (mot_cle.value=="");
      // Nettoyage du cluster
      cluster.clearLayers();
      // Retrait du cluster sur la carte
      map.removeLayer(cluster);
-     var url = wfsUrl + "&cql_filter=begin>='"+start.value+"' AND end<='"+end.value+"'";
+     // Initialisation de l'url avec un filtre toujours vrai (utile pour la syntaxe ensuite)
+     var url = wfsUrl + "&cql_filter=1=1"
+     /// dates
+     if (start.value!=""){
+        url=url+ "AND begin>='"+start.value+"'";
+     }
+     if (end.value!="") {
+        url=url+ " AND end<='"+end.value+"'";
+     }
+     /// localisations
      if (loc_fr.checked && !loc_et.checked){
         url = url + " AND country='France'";
      }
@@ -112,6 +130,11 @@ function testFormulaire() {
      else if (!loc_fr.checked && !loc_et.checked){
         alert("Sélectionner une localisation")
      }
+     /// mot clé
+     if (mot_cle.value!=""){
+        url = url + " AND title ILIKE '%25" + mot_cle.value + "%25'";
+     }
+    //Requête au WFS et création des points
     requestPoints(url);
 }
 
