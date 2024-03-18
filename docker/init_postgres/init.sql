@@ -21,6 +21,8 @@ CREATE TABLE public.organization
 	id serial NOT NULL,
 	name character varying(256) NOT NULL,
 	adress character varying(1024) NOT NULL,
+	city character varying(256) NOT NULL,
+	country character varying(256) NOT NULL,
 	coords Geometry(Point, 4326) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name, adress)
@@ -45,15 +47,15 @@ CREATE TABLE public.internship
 	diapo_url character varying(1024) NOT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (id_student)
-        REFERENCES public.student (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE SET NULL
-        NOT VALID,
-    FOREIGN KEY (id_organization)
-        REFERENCES public.organization (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID
+		REFERENCES public.student (id) MATCH SIMPLE
+		ON UPDATE NO ACTION
+		ON DELETE SET NULL
+		NOT VALID,
+	FOREIGN KEY (id_organization)
+		REFERENCES public.organization (id) MATCH SIMPLE
+		ON UPDATE NO ACTION
+		ON DELETE NO ACTION
+		NOT VALID
 );
 
 ALTER TABLE IF EXISTS public.internship
@@ -66,14 +68,14 @@ CREATE VIEW public.view_internship AS
 	SELECT
 		i.id, i.title, i.begin, i.end, i.organization_contact, 
 		i.gratification, i.rapport_url, i.diapo_url,
-		o.name AS organization_name, o.adress, o.coords,
+		o.name AS organization_name, o.adress, o.city, o.country, o.coords,
 		s.name AS student
 	FROM internship AS i
 	LEFT JOIN organization AS o ON i.id_organization = o.id
 	LEFT JOIN student AS s ON i.id_student = s.id;
 
 ALTER TABLE public.view_internship
-    OWNER TO postgres;
+	OWNER TO postgres;
 
 -- ------------------------------------------------------------------ --
 -- --  load data                                                   -- --
@@ -121,7 +123,9 @@ CREATE TEMP TABLE internship_tmp2 AS SELECT
 	date_debut,
 	date_fin,
 	entreprise_nom,
-	entreprise_adresse || ', ' || entreprise_ville || ', ' || entreprise_pays AS adresse, 
+	entreprise_adresse || ', ' || entreprise_ville || ', ' || entreprise_pays AS adresse,
+	entreprise_ville AS ville,
+	entreprise_pays AS pays,
 	contact_mail
 FROM internship_tmp;
 
@@ -129,8 +133,8 @@ FROM internship_tmp;
 INSERT INTO student (name)
 	SELECT nom_eleve FROM internship_tmp2;
 
-INSERT INTO organization (name, adress, coords)
-	SELECT entreprise_nom, adresse, coords FROM internship_tmp2;
+INSERT INTO organization (name, adress, city, country, coords)
+	SELECT entreprise_nom, adresse, ville, pays, coords FROM internship_tmp2;
 
 INSERT INTO internship (id_student, id_organization, student_cycle, title,
 	"begin", "end", organization_contact, 
