@@ -1,5 +1,5 @@
 -- use postgis to manipule geometries
-CREATE EXTENSION postgis;
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- ------------------------------------------------------------------ --
 -- --  Tables and constraints                                      -- --
@@ -150,3 +150,4 @@ INSERT INTO internship (id_student, id_organization, student_cycle, title,
 
 -- remove temp tables
 DROP TABLE internship_tmp, internship_tmp2;
+
