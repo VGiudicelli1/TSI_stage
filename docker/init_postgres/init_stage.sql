@@ -110,10 +110,7 @@ CSV HEADER;
 
 -- reformate and extract data
 CREATE TEMP TABLE internship_tmp2 AS SELECT
-	ST_GeomFromText(
-		'POINT (' || SPLIT_PART(geometry, ',', 2)  || ' ' || SPLIT_PART(geometry, ',', 1) || ')', 
-		4326
-	) AS coords,
+	ST_POINT(SPLIT_PART(geometry, ',', 2), SPLIT_PART(geometry, ',', 1)) AS coords,
 	id_eleve,
 	nom_eleve,
 	cycle_eleve,
