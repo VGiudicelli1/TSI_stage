@@ -143,8 +143,6 @@ var bouton = document.getElementById("applique_filtres");
 bouton.addEventListener("click", testFormulaire);
 
 function testFormulaire() {
-    console.log (start.value);
-    console.log (mot_cle.value=="");
      // Nettoyage du cluster
      cluster.clearLayers();
      // Retrait du cluster sur la carte
