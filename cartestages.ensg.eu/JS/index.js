@@ -52,10 +52,12 @@ var cluster = new L.MarkerClusterGroup();
 // Ajout couche de points WFS
 
 /// Définition de l'URL du service WFS
-var wfsUrl = 'http://172.31.58.191:8080/geoserver/Stages/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Stages%3Aview_internship&maxFeatures=50&outputFormat=application%2Fjson';
+var wfsUrl = 'http://172.31.58.191:8080/geoserver/stages/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Stages%3Aview_internship&maxFeatures=50&outputFormat=application%2Fjson';
+requestPoints(wfsUrl);
 
 /// Requête au WFS création des points et clusterisation
-fetch(wfsUrl)
+function requestPoints(url){
+    fetch(url)
     .then(function(response) {
         return response.json();
     })
@@ -79,6 +81,38 @@ fetch(wfsUrl)
     })
     .catch(function(error) {
         console.error('Error fetching WFS data:', error);
-});
+        alert("Flux WFS non disponible");
+    });
+}
+
+
+// Filtres 
+var start= document.getElementById("start");
+var end= document.getElementById("end");
+var loc_fr= document.getElementById("france");
+var loc_et= document.getElementById("etranger");
+
+var bouton = document.getElementById("applique_filtres");
+bouton.addEventListener('click', testFormulaire);
+
+
+function testFormulaire() {
+    console.log (start.value + " " + end.value + " " + loc_fr.checked)
+     // Nettoyage du cluster
+     cluster.clearLayers();
+     // Retrait du cluster sur la carte
+     map.removeLayer(cluster);
+     var url = wfsUrl + "&cql_filter=begin>='"+start.value+"' AND end<='"+end.value+"'";
+     if (loc_fr.checked && !loc_et.checked){
+        url = url + " AND country='France'";
+     }
+     else if (!loc_fr.checked && loc_et.checked){
+        url = url + " AND NOT country='France'";
+     }
+     else if (!loc_fr.checked && !loc_et.checked){
+        alert("Sélectionner une localisation")
+     }
+    requestPoints(url);
+}
 
 
