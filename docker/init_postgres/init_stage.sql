@@ -1,81 +1,78 @@
 -- use postgis to manipule geometries
 CREATE EXTENSION IF NOT EXISTS postgis;
 
+
 -- ------------------------------------------------------------------ --
 -- --  Tables and constraints                                      -- --
 -- ------------------------------------------------------------------ --
-CREATE TABLE public.student
+
+CREATE TABLE public.entreprise
 (
 	id serial NOT NULL,
-	name character varying(256) NOT NULL,
+	nom_entreprise CHARACTER VARYING(256) NOT NULL,
+	adresse CHARACTER VARYING(1024) NOT NULL,
+	ville CHARACTER VARYING(256) NOT NULL,
+	pays CHARACTER VARYING(256) NOT NULL,
+	coords GEOMETRY(Point, 4326) NOT NULL,
+	mail_contact CHARACTER VARYING(256) DEFAULT NULL,
+	lien_site CHARACTER VARYING(256) DEFAULT NULL,
+
 	PRIMARY KEY (id),
-	UNIQUE (name)
+	UNIQUE (nom_entreprise, adresse)
 );
 
-ALTER TABLE IF EXISTS public.student
+ALTER TABLE IF EXISTS public.entreprise
 	OWNER to postgres;
 
 
-CREATE TABLE public.organization
+CREATE TABLE public.stage
 (
 	id serial NOT NULL,
-	name character varying(256) NOT NULL,
-	adress character varying(1024) NOT NULL,
-	city character varying(256) NOT NULL,
-	country character varying(256) NOT NULL,
-	coords Geometry(Point, 4326) NOT NULL,
+	id_entreprise BIGINT NOT NULL,
+	gratification BOOLEAN DEFAULT NULL,
+	titre TEXT NOT NULL,
+	domaine CHARACTER VARYING(256) NOT NULL,
+	debut DATE NOT NULL,
+	fin DATE NOT NULL,
+	cycle CHARACTER VARYING(256) NOT NULL,
+
 	PRIMARY KEY (id),
-	UNIQUE (name, adress)
-);
-
-ALTER TABLE IF EXISTS public.organization
-	OWNER to postgres;
-
-
-CREATE TABLE public.internship
-(
-	id serial NOT NULL,
-	id_student bigint,
-	id_organization bigint NOT NULL,
-	student_cycle character varying(64) NOT NULL,
-	title text NOT NULL,
-	begin date NOT NULL,
-	"end" date NOT NULL,
-	organization_contact character varying(256) NOT NULL,
-	gratification boolean,
-	rapport_url character varying(1024) NOT NULL,
-	diapo_url character varying(1024) NOT NULL,
-	PRIMARY KEY (id),
-	FOREIGN KEY (id_student)
-		REFERENCES public.student (id) MATCH SIMPLE
-		ON UPDATE NO ACTION
-		ON DELETE SET NULL
-		NOT VALID,
-	FOREIGN KEY (id_organization)
-		REFERENCES public.organization (id) MATCH SIMPLE
+	FOREIGN KEY (id_entreprise)
+		REFERENCES public.entreprise (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 		NOT VALID
 );
 
-ALTER TABLE IF EXISTS public.internship
+ALTER TABLE IF EXISTS public.stage
 	OWNER to postgres;
+
 
 -- ------------------------------------------------------------------ --
 -- --  Views                                                       -- --
 -- ------------------------------------------------------------------ --
-CREATE VIEW public.view_internship AS
-	SELECT
-		i.id, i.title, i.begin, i.end, i.organization_contact, 
-		i.gratification, i.rapport_url, i.diapo_url,
-		o.name AS organization_name, o.adress, o.city, o.country, o.coords,
-		s.name AS student
-	FROM internship AS i
-	LEFT JOIN organization AS o ON i.id_organization = o.id
-	LEFT JOIN student AS s ON i.id_student = s.id;
 
-ALTER TABLE public.view_internship
+CREATE VIEW public.vue_stage AS
+	SELECT
+		s.id AS id_stage, 
+		s.cycle AS cycle,
+		s.titre AS titre,
+		s.gratification AS gratification,
+		1 AS annee,
+		1 AS duree,
+		e.nom_entreprise AS nom_entreprise,
+		e.adresse AS adresse,
+		e.ville AS ville,
+		e.pays AS pays,
+		e.coords AS coords,
+		e.mail_contact AS mail_contact,
+		e.lien_site AS lien_site
+	FROM public.stage AS s
+	LEFT JOIN public.entreprise AS e ON s.id_entreprise = e.id;
+
+ALTER TABLE public.vue_stage
 	OWNER TO postgres;
+
 
 -- ------------------------------------------------------------------ --
 -- --  load data                                                   -- --
@@ -110,7 +107,7 @@ CSV HEADER;
 
 -- reformate and extract data
 CREATE TEMP TABLE internship_tmp2 AS SELECT
-	ST_POINT(SPLIT_PART(geometry, ',', 2), SPLIT_PART(geometry, ',', 1)) AS coords,
+	ST_POINT(SPLIT_PART(geometry, ',', 2)::float, SPLIT_PART(geometry, ',', 1)::float) AS coords,
 	id_eleve,
 	nom_eleve,
 	cycle_eleve,
@@ -127,22 +124,14 @@ CREATE TEMP TABLE internship_tmp2 AS SELECT
 FROM internship_tmp;
 
 
-INSERT INTO student (name)
-	SELECT nom_eleve FROM internship_tmp2;
+INSERT INTO public.entreprise (nom_entreprise, adresse, ville, pays, coords, mail_contact, lien_site)
+	SELECT entreprise_nom, adresse, ville, pays, coords, contact_mail, NULL FROM internship_tmp2;
 
-INSERT INTO organization (name, adress, city, country, coords)
-	SELECT entreprise_nom, adresse, ville, pays, coords FROM internship_tmp2;
-
-INSERT INTO internship (id_student, id_organization, student_cycle, title,
-	"begin", "end", organization_contact, 
-	gratification, rapport_url, diapo_url)
+INSERT INTO stage (id_entreprise, gratification, titre, domaine, debut, fin, cycle)
 	SELECT
-		s.id, o.id, i.cycle_eleve, i.titre,
-		to_date(i.date_debut, 'dd/mm/yyyy'), to_date(i.date_fin, 'dd/mm/yyyy'), i.contact_mail, 
-		NULL, '', ''
+		e.id, NULL, i.titre, '', to_date(i.date_debut, 'dd/mm/yyyy'), to_date(i.date_fin, 'dd/mm/yyyy'), i.cycle_eleve
 	FROM internship_tmp2 AS i 
-	LEFT JOIN student AS s ON i.nom_eleve = s.name
-	LEFT JOIN organization AS o ON o.name = entreprise_nom AND o.adress = adress
+	LEFT JOIN public.entreprise AS e ON e.nom_entreprise = i.entreprise_nom AND e.adresse = i.adresse
 ;
 
 -- remove temp tables
