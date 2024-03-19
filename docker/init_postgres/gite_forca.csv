@@ -1,0 +1,11 @@
+nom_gite,adresse,lat,lng,nb_chambre,nb_lits,mail_contact,telephone,annee,commentaire,loyer_moyen
+gite1,234 rue 54 fs,1,1,5,5,,,2022,tres bon gite,123
+gite1,234 rue 54 fs,1,1,5,5,,,2023,bon gite,125
+gite1,234 rue 54 fs,1,1,5,5,,,2024,gite interessant,136
+gite2,rue RZEF,2,0,3,2,,,2022,bien,251
+gite2,rue RZEF,2,0,3,2,,,2023,ok,269
+gite2,rue RZEF,2,0,3,2,,,2024,oui,297
+gite3,zdgzezveez,3,3,7,10,,,2021,trop bien,71
+gite3,zdgzezveez,3,3,7,10,,,2023,sympa,
+gite4,gsfnhihfebbre reh e h,4,4,1,1,,,2022,non,59
+gite5,efirlsfkjfdlk,5,7,8,3,,,2026,un peu cher,8559

@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.24.2
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    environment:
+      CORS_ENABLED: "true"
+      GEOSERVER_ADMIN_USERNAME: admin
+      GEOSERVER_ADMIN_PASSWORD: tsi23lesboss
+      SKIP_DEMO_DATA: "true"
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: tsi23lesboss
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: postgres #Nom du conteneur
+      POSTGRES_DB: postgres #Nom de la DB
+    networks:
+      - database_net
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    restart: always
+    # set shared memory limit
+    shm_size: 128mb
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: tsi23lesboss	
+    networks:
+      - database_net
+    volumes:
+      - ./init_postgres:/docker-entrypoint-initdb.d:ro
+      - postgres_data:/var/lib/postgresql/data:rw
+
+  http_server:
+    image: httpd:2.4
+    restart: always
+    ports:
+      - 1234:80
+    volumes:
+      - ./www/:/usr/local/apache2/htdocs/:ro
+    networks:
+      - database_net
+
+  # for developpement only ! remove on production
+  pgAdmin:
+    image: dpage/pgadmin4:8.4
+    networks:
+      - database_net
+    ports:
+      - 5050:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com		# LOGIN
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret		# LOGIN
+    volumes:
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - postgres
+
+networks:
+  database_net:
+
+volumes:
+  postgres_data:
