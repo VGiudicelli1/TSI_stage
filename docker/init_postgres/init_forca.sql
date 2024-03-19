@@ -1,9 +1,11 @@
 -- use postgis to manipule geometries
 CREATE EXTENSION IF NOT EXISTS postgis;
 
+
 -- ------------------------------------------------------------------ --
 -- --  Tables and constraints                                      -- --
 -- ------------------------------------------------------------------ --
+
 CREATE TABLE public.gite_forca
 (
 	id SERIAL NOT NULL,
@@ -16,7 +18,7 @@ CREATE TABLE public.gite_forca
 	telephone CHARACTER VARYING(32) DEFAULT NULL,
 	
 	PRIMARY KEY (id),
-	UNIQUE (nom)
+	UNIQUE (nom_gite)
 );
 
 ALTER TABLE IF EXISTS public.gite_forca
@@ -32,7 +34,7 @@ CREATE TABLE public.location_forca
 	
 	PRIMARY KEY (id_gite, annee),
 	FOREIGN KEY (id_gite)
-		REFERENCES public.gite_forca (id_gite) MATCH SIMPLE
+		REFERENCES public.gite_forca (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
 		ON DELETE SET NULL
 		NOT VALID
@@ -47,11 +49,11 @@ ALTER TABLE IF EXISTS public.location_forca
 -- ------------------------------------------------------------------ --
 
 CREATE VIEW public.vue_gite_forca AS 
-	SELECT g.id_gite, g.nom_gite, g.adresse, g.nb_chambre, g.nb_lit, g.mail_contact, g.telephone, g.coords,
+	SELECT g.id, g.nom_gite, g.adresse, g.nb_chambre, g.nb_lit, g.mail_contact, g.telephone, g.coords,
 	(MAX(ARRAY[l.annee, l.loyer_moyen::int]) FILTER (WHERE l.loyer_moyen > 0))[2] AS dernier_loyer
 	FROM public.gite_forca AS g 
-	LEFT JOIN public.location_forca AS l ON g.id_gite = l.id_gite
-	GROUP BY g.id_gite;
+	LEFT JOIN public.location_forca AS l ON g.id = l.id_gite
+	GROUP BY g.id;
 
 CREATE VIEW public.vue_gite_commentaire AS 
 	SELECT id_gite, annee, commentaire, loyer_moyen 
