@@ -19,5 +19,5 @@ curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<featureType><
 
 Enfin on autorise tous les rôles en lecture de la couche:
 ```bash
-curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<rules><rule><@resource>stages.view_internship.r</@resource><text>*</text></rule></rules>" http://localhost:8080/geoserver/rest/security/acl/layers
+curl -v -u admin:geoserver -XPOST -H  "accept: application/json" -H  "content-type: application/xml" -d "<rules><rule resource=\"stages.view_internship.r\">*</rule></rules>" http://localhost:8080/geoserver/rest/security/acl/layers
 ```
