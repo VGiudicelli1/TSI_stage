@@ -53,7 +53,7 @@ var cluster = new L.MarkerClusterGroup();
 
 /// Définition de l'URL du service WFS
 var wfsUrl =
-  "http://172.31.58.191:8080/geoserver/stages/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Stages%3Aview_internship&maxFeatures=50&outputFormat=application%2Fjson";
+  "http://172.31.58.191:8080/geoserver/stages/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=stages%3Avue_stage&maxFeatures=50&outputFormat=application%2Fjson";
 requestPoints(wfsUrl);
 
 /// Requête au WFS création des points et clusterisation
