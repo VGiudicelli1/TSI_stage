@@ -21,3 +21,5 @@ Enfin on autorise tous les rôles en lecture de la couche:
 ```bash
 curl -v -u admin:geoserver -XPOST -H  "accept: application/json" -H  "content-type: application/xml" -d "<rules><rule resource=\"stages.view_internship.r\">*</rule></rules>" http://localhost:8080/geoserver/rest/security/acl/layers
 ```
+
+On peut également éxécuter le fichier [init.sh](./docker/init.sh) qui comporte ces 4 commandes, à condition que le geoserver soit bien à l'adresse http://localhost:8080/geoserver
