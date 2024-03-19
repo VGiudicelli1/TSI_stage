@@ -22,42 +22,33 @@
     <!-- Filtres -->
     <div id="mySidenav" class="sidenav" class="filtres">
         <form id = "formulaire">
-                <fieldset id ="Localisation">
+                <fieldset id ="localisation">
                     <legend>Localisation du stage</legend>
                     <div>
-                        <input type="radio" id="france" name="localisation" value='france'>
+                        <input type="checkbox" id="france" name="localisation" value='france' checked>
                         <label for="france">France</label>
                     </div>
                     <div>
-                        <input type="radio" id="etranger" name="localisation" value='etranger' checked>
+                        <input type="checkbox" id="etranger" name="localisation" value='etranger' checked>
                         <label for="NonSegm">Étranger</label>
-                    </div>
-                </fieldset>
-                <fieldset id ="cycle">
-                    <legend>Fiilière/cycle</legend>
-                    <div>
-                        <input type="checkbox" id="TSI" name="cycle" value ="TSI" checked>
-                        <label for="TSI">TSI</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="IGAST" name="cycle" value="IGAST" checked>
-                        <label for="IGAST">IGAST</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="PPMD" name="cycle" value="PPMD" checked>
-                        <label for="PPMD">PPMD</label>
                     </div>
                 </fieldset>
                 <fieldset id ="temps">
                     <legend>Plage temporelle</legend>
                     <div>
                         <label for="start">Date début:</label>
-                        <input type="date" id="start" name="time" value="2018-07-22" min="2018-01-01" max="2018-12-31">
+                        <input type="date" id="start" name="time" value="2024-05-01" min="2024-01-01" max="2025-12-31">
                     </div>
                     <div>
                         <label for="end">Date fin:</label>
-                        <input type="date" id="end" name="time" value="2018-07-22" min="2018-01-01" max="2018-12-31">
+                        <input type="date" id="end" name="time" value="2024-11-30" min="2024-01-01" max="2025-12-31">
                     </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Mot clé</legend>
+                    <div>
+                        <input type="text" id="mot_cle" name="mot_cle"/>
+                    </div>    
                 </fieldset>
             </form>
         <button id="applique_filtres">Appliquer</button>
