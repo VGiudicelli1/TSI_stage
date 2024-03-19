@@ -43,6 +43,19 @@ services:
       - ./www/:/usr/local/apache2/htdocs/:ro
     networks:
       - database_net
+  
+  php_server:
+    build:
+      context: ./serverPHP
+      dockerfile: Dockerfile
+    ports:
+      - 8081:80
+    volumes:
+      - ./serverPHP/www:/var/www/html:ro
+    networks:
+      - database_net
+    depends_on:
+      - postgres
 
   # for developpement only ! remove on production
   pgAdmin:
