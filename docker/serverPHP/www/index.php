@@ -11,7 +11,12 @@
 		$conn = null;
 	}
 
-	$str_id_gite = $_GET["id"];
+	if(isset($_GET["id"])){
+		$str_id_gite = $_GET["id"];
+	} else {
+		$str_id_gite = "0";
+		$errors[] = "Undefined array key \"id\"";
+	}
 	$id_gite = intval($str_id_gite);
 
 	$sql =  "SELECT annee, commentaire, loyer_moyen FROM vue_gite_commentaire WHERE id_gite = $id_gite";
