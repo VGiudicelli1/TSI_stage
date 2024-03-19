@@ -4,10 +4,10 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 -- ------------------------------------------------------------------ --
 -- --  Tables and constraints                                      -- --
 -- ------------------------------------------------------------------ --
-CREATE TABLE public.gite
+CREATE TABLE public.gite_forca
 (
 	id SERIAL NOT NULL,
-	nom CHARACTER VARYING(256) NOT NULL,
+	nom_gite CHARACTER VARYING(256) NOT NULL,
 	adresse CHARACTER VARYING(1024) NOT NULL,
 	nb_chambre INTEGER NOT NULL,
 	nb_lit INTEGER NOT NULL,
@@ -19,11 +19,11 @@ CREATE TABLE public.gite
 	UNIQUE (nom)
 );
 
-ALTER TABLE IF EXISTS public.gite
+ALTER TABLE IF EXISTS public.gite_forca
 	OWNER to postgres;
 
 
-CREATE TABLE public.location
+CREATE TABLE public.location_forca
 (
 	id_gite INTEGER NOT NULL,
 	annee INTEGER NOT NULL,
@@ -32,13 +32,13 @@ CREATE TABLE public.location
 	
 	PRIMARY KEY (id_gite, annee),
 	FOREIGN KEY (id_gite)
-		REFERENCES public.gite (id) MATCH SIMPLE
+		REFERENCES public.gite_forca (id_gite) MATCH SIMPLE
 		ON UPDATE NO ACTION
 		ON DELETE SET NULL
 		NOT VALID
 );
 
-ALTER TABLE IF EXISTS public.location
+ALTER TABLE IF EXISTS public.location_forca
 	OWNER to postgres;
 
 
@@ -46,16 +46,16 @@ ALTER TABLE IF EXISTS public.location
 -- --  Views                                                       -- --
 -- ------------------------------------------------------------------ --
 
-CREATE VIEW public.vue_gite AS 
-	SELECT g.id, g.nom, g.adresse, g.nb_chambre, g.nb_lit, g.mail_contact, g.telephone, g.coords,
+CREATE VIEW public.vue_gite_forca AS 
+	SELECT g.id_gite, g.nom_gite, g.adresse, g.nb_chambre, g.nb_lit, g.mail_contact, g.telephone, g.coords,
 	(MAX(ARRAY[l.annee, l.loyer_moyen::int]) FILTER (WHERE l.loyer_moyen > 0))[2] AS dernier_loyer
-	FROM public.gite AS g 
-	LEFT JOIN public.location AS l ON g.id = l.id_gite
-	GROUP BY g.id;
+	FROM public.gite_forca AS g 
+	LEFT JOIN public.location_forca AS l ON g.id_gite = l.id_gite
+	GROUP BY g.id_gite;
 
-CREATE VIEW public.vue_gite_comment AS 
+CREATE VIEW public.vue_gite_commentaire AS 
 	SELECT id_gite, annee, commentaire, loyer_moyen 
-	FROM public.location;
+	FROM public.location_forca;
 
 
 -- ------------------------------------------------------------------ --
@@ -81,12 +81,12 @@ FROM '/docker-entrypoint-initdb.d/gite_forca.csv'
 DELIMITER ','
 CSV HEADER;
 
-INSERT INTO public.gite (nom, adresse, nb_chambre, nb_lit, coords, mail_contact, telephone) 
+INSERT INTO public.gite_forca (nom_gite, adresse, nb_chambre, nb_lit, coords, mail_contact, telephone) 
 	SELECT DISTINCT ON (nom_gite) nom_gite, adresse, nb_chambre, nb_lit, 
 	ST_POINT(lat, lng), mail_contact, telephone
 	FROM gite_tmp;
 
-INSERT INTO public.location (id_gite, annee, commentaire, loyer_moyen) 
+INSERT INTO public.location_forca (id_gite, annee, commentaire, loyer_moyen) 
 	SELECT g.id, annee, commentaire, loyer_moyen
 	FROM gite_tmp JOIN public.gite AS g ON gite_tmp.nom_gite = g.nom;
 
