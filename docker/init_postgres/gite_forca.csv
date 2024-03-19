@@ -1,11 +1,10 @@
 nom_gite,adresse,lat,lng,nb_chambre,nb_lits,mail_contact,telephone,annee,commentaire,loyer_moyen
-gite1,234 rue 54 fs,1,1,5,5,,,2022,tres bon gite,123
-gite1,234 rue 54 fs,1,1,5,5,,,2023,bon gite,125
-gite1,234 rue 54 fs,1,1,5,5,,,2024,gite interessant,136
-gite2,rue RZEF,2,0,3,2,,,2022,bien,251
-gite2,rue RZEF,2,0,3,2,,,2023,ok,269
-gite2,rue RZEF,2,0,3,2,,,2024,oui,297
-gite3,zdgzezveez,3,3,7,10,,,2021,trop bien,71
-gite3,zdgzezveez,3,3,7,10,,,2023,sympa,
-gite4,gsfnhihfebbre reh e h,4,4,1,1,,,2022,non,59
-gite5,efirlsfkjfdlk,5,7,8,3,,,2026,un peu cher,8559
+Le Bruset,"Le Bruset, 04230 Saint-Etienne-Les-Orgues",44.05242963391678 ,5.79677022417208,3,6,,,2020,Objectivement c'est la meilleur coloc,
+Le Bruset,"Le Bruset, 04230 Saint-Etienne-Les-Orgues",44.05242963391678 ,5.79677022417208,3,6,,,2023,,
+Barnery,"510 rue de Saint-Michel-l’Observatoire, 04300 Dauphin",43.900486096780156 ,5.769600464158829,3,6,,,2020,Accueille avec joie les eleves de l'ensg tout les ans depuis plus de 10 ans,
+Barnery,"510 rue de Saint-Michel-l’Observatoire, 04300 Dauphin",43.900486096780156 ,5.769600464158829,3,6,,,2023,,
+Gite-test1,"Rue Violette, 04300 Forcalquier",43.958479622009605 ,5.782306044822608,2,3,,,2022,ok,690
+Gite-test1,"Rue Violette, 04300 Forcalquier",43.958479622009605 ,5.782306044822608,2,3,,,2021,oui,720
+Gite-test2,Forcalquier,43.962079622009605 ,5.785006044822608,7,10,,,2021,trop bien,430
+Gite-test2,Forcalquier,43.962079622009605 ,5.785006044822608,7,10,,,2023,sympa,450
+Gite-test2,Forcalquier,43.962079622009605 ,5.785006044822608,7,10,,,2022,non,410
