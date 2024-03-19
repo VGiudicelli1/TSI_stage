@@ -90,7 +90,7 @@ INSERT INTO public.gite_forca (nom_gite, adresse, nb_chambre, nb_lit, coords, ma
 
 INSERT INTO public.location_forca (id_gite, annee, commentaire, loyer_moyen) 
 	SELECT g.id, annee, commentaire, loyer_moyen
-	FROM gite_tmp JOIN public.gite AS g ON gite_tmp.nom_gite = g.nom;
+	FROM gite_tmp JOIN public.gite_forca AS g ON gite_tmp.nom_gite = g.nom_gite;
 
 DROP TABLE gite_tmp;
 
