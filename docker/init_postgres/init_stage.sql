@@ -58,8 +58,10 @@ CREATE VIEW public.vue_stage AS
 		s.cycle AS cycle,
 		s.titre AS titre,
 		s.gratification AS gratification,
-		1 AS annee,
-		1 AS duree,
+		EXTRACT (YEAR FROM s.debut) AS annee,
+		ROUND((s.fin - s.debut)/7.) AS duree, -- duree en semaines
+		s.debut AS debut,	-- pour la rétrocompatibilité. Ces colones sont 
+		s.fin AS fin,		-- dépréciées: utiliser annee et duree
 		e.nom_entreprise AS nom_entreprise,
 		e.adresse AS adresse,
 		e.ville AS ville,
