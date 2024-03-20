@@ -127,7 +127,7 @@ FROM internship_tmp;
 
 
 INSERT INTO public.entreprise (nom_entreprise, adresse, ville, pays, coords, mail_contact, lien_site)
-	SELECT entreprise_nom, adresse, ville, pays, coords, contact_mail, NULL FROM internship_tmp2;
+	SELECT entreprise_nom, adresse, ville, pays, coords, NULL, NULL FROM internship_tmp2;
 
 INSERT INTO stage (id_entreprise, gratification, titre, domaine, debut, fin, cycle)
 	SELECT
