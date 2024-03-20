@@ -38,7 +38,7 @@ services:
     image: httpd:2.4
     restart: always
     ports:
-      - 1234:80
+      - 80:80
     volumes:
       - ./www/:/usr/local/apache2/htdocs/:ro
     networks:
