@@ -85,7 +85,7 @@ function requestPoints(url) {
         // Construction du lien vers la page des détails du stage avec les données spécifiques du stage
         var detailsLink =
           "<a href='details_stage.html?title=" +
-          feature.properties.title +
+          feature.properties.titre +
           "&begin=" +
           encodeURIComponent(feature.properties.debut) +
           "&end=" +
