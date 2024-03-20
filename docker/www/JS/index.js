@@ -85,35 +85,29 @@ function requestPoints(url) {
           "<a href='details_stage.html?title=" +
           feature.properties.title +
           "&begin=" +
-          encodeURIComponent(feature.properties.begin) +
+          encodeURIComponent(feature.properties.debut) +
           "&end=" +
-          encodeURIComponent(feature.properties.end) +
+          encodeURIComponent(feature.properties.fin) +
           "&organization_contact=" +
-          encodeURIComponent(feature.properties.organization_contact) +
+          encodeURIComponent(feature.properties.mail_contact) +
           "&gratification=" +
           encodeURIComponent(feature.properties.gratification) +
-          "&rapport_url=" +
-          encodeURIComponent(feature.properties.rapport_url) +
-          "&diapo_url=" +
-          encodeURIComponent(feature.properties.diapo_url) +
           "&organization_name=" +
-          encodeURIComponent(feature.properties.organization_name) +
+          encodeURIComponent(feature.properties.nom_entreprise) +
           "&adress=" +
-          encodeURIComponent(feature.properties.adress) +
+          encodeURIComponent(feature.properties.adresse) +
           "&city=" +
-          encodeURIComponent(feature.properties.city) +
+          encodeURIComponent(feature.properties.ville) +
           "&country=" +
-          encodeURIComponent(feature.properties.country) +
-          "&student=" +
-          encodeURIComponent(feature.properties.student) +
+          encodeURIComponent(feature.properties.pays) +
           "'>Détails du stage</a>";
 
         // Initialisation des popups
         marker.bindPopup(
           "<h3>" +
-            feature.properties.title +
+            feature.properties.titre +
             "</h3><p>" +
-            feature.properties.organization_name +
+            feature.properties.nom_entreprise +
             "</p><p>" +
             detailsLink +
             "</p>"
@@ -151,24 +145,24 @@ function testFormulaire() {
      var url = wfsUrl + "&cql_filter=1=1"
      /// dates
      if (start.value!=""){
-        url=url+ "AND begin>='"+start.value+"'";
+        url=url+ "AND debut>='"+start.value+"'";
      }
      if (end.value!="") {
-        url=url+ " AND end<='"+end.value+"'";
+        url=url+ " AND fin<='"+end.value+"'";
      }
      /// localisations
      if (loc_fr.checked && !loc_et.checked){
-        url = url + " AND country='France'";
+        url = url + " AND pays='France'";
      }
      else if (!loc_fr.checked && loc_et.checked){
-        url = url + " AND NOT country='France'";
+        url = url + " AND NOT pays='France'";
      }
      else if (!loc_fr.checked && !loc_et.checked){
         alert("Sélectionner une localisation")
      }
      /// mot clé
      if (mot_cle.value!=""){
-        url = url + " AND title ILIKE '%25" + mot_cle.value + "%25'";
+        url = url + " AND titre ILIKE '%25" + mot_cle.value + "%25'";
      }
     //Requête au WFS et création des points
     requestPoints(url);
